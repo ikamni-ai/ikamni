@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ikamni - Enterprise AI Agents Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .animated-gradient-text {
+            background: linear-gradient(270deg, #8b5cf6, #6366f1, #8b5cf6, #a855f7);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradient 3s linear infinite;
+        }
+
+        body {
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .symbol {
+            position: fixed;
+            color: rgba(139, 92, 246, 0.2);  /* Increased opacity from 0.15 to 0.2 */
+            pointer-events: none;
+            z-index: 0;
+            font-family: 'Times New Roman', serif;
+            font-weight: bold;  /* Added bold weight */
+            text-shadow: 0 0 1px rgba(139, 92, 246, 0.1);  /* Added subtle shadow */
+        }
+
+        /* Ensure all content stays above symbols */
+        nav, header, section, footer {
+            position: relative;
+            z-index: 1;
+            background: transparent;
+        }
+
+        /* Slightly increase section opacity to maintain readability */
+        .bg-white {
+            background-color: rgba(255, 255, 255, 0.97);
+        }
+
+        .bg-gray-50 {
+            background-color: rgba(249, 250, 251, 0.97);
+        }
+
+        .bg-gray-900 {
+            background-color: rgba(17, 24, 39, 0.98);
+        }
+
+        .bg-purple-600 {
+            background-color: rgba(124, 58, 237, 0.98);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: white;
+            margin: 15% auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-10%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .pixelated {
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        footer {
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Hero Section -->
+    <header class="container mx-auto px-6 py-32 text-center">
+        <!-- Language Switcher -->
+        <div class="absolute top-4 right-4">
+            <button onclick="toggleLanguage()" class="text-purple-600 hover:text-purple-700 flex items-center gap-2">
+                <span id="currentLang">EN</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+        <div class="text-6xl mb-12" 
+             style="font-family: 'Quicksand', sans-serif; 
+                    font-weight: 300;
+                    letter-spacing: 0.08em;
+                    background: linear-gradient(45deg, #c084fc, #8b5cf6, #a855f7);
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    color: transparent;
+                    text-shadow: 1px 1px 2px rgba(192, 132, 252, 0.1);">
+            ikamni
+        </div>
+        <h1 class="text-6xl font-bold mb-8 animated-gradient-text leading-normal">Vertical AI Agents on the Enterprise-level</h1>
+        <p class="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
+            Deploy intelligent AI agents across your organization. Automate complex workflows, enhance decision-making, and drive operational efficiency at scale.
+        </p>
+        <div class="flex justify-center gap-4">
+            <button class="bg-purple-600 text-white px-8 py-4 rounded-lg text-lg hover:bg-purple-700">Schedule Demo</button>
+            <button class="border-2 border-purple-600 text-purple-600 px-8 py-4 rounded-lg text-lg hover:bg-purple-50">Documentation</button>
+        </div>
+    </header>
+
+    <!-- Add the modal HTML after your header section -->
+    <div id="demoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="text-2xl font-bold mb-6">Schedule a Demo</h2>
+            <p class="text-gray-600 mb-6">Please enter your business email to schedule a demo of ikamni.</p>
+            <form id="demoForm" class="space-y-4">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Business Email</label>
+                    <input type="email" id="email" name="email" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                           placeholder="you@company.com">
+                    <div id="emailError" class="error-message">Please enter a valid business email address.</div>
+                </div>
+                <button type="submit" 
+                        class="w-full bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors">
+                    Request Demo
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- AI Agents Section -->
+    <section class="py-24">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-24 max-w-7xl mx-auto">
+                <!-- Hona Section -->
+                <div class="flex flex-col items-start max-w-xl">
+                    <h2 class="text-4xl font-bold mb-6 animated-gradient-text">Meet Hona</h2>
+                    <h3 class="text-2xl text-purple-600 mb-4">Our First Enterprise-Agent Dedicated to Tax Accounting</h3>
+                    <p class="text-gray-600 text-lg mb-6">
+                        Hona revolutionizes tax accounting workflows by automating complex calculations, ensuring compliance, 
+                        and providing real-time insights. Trained on extensive tax regulations and accounting principles, 
+                        Hona helps enterprises streamline their tax operations with unprecedented accuracy.
+                    </p>
+                    <ul class="space-y-4 text-gray-600 mb-8">
+                        <li class="flex items-center">
+                            <span class="text-purple-600 mr-2">✓</span>
+                            Automated tax calculations and validations
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-purple-600 mr-2">✓</span>
+                            Real-time compliance monitoring
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-purple-600 mr-2">✓</span>
+                            Intelligent document processing
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-purple-600 mr-2">✓</span>
+                            Advanced reporting and analytics
+                        </li>
+                    </ul>
+                    <button class="bg-purple-600 text-white px-8 py-4 rounded-lg hover:bg-purple-700 transition-colors text-lg">
+                        Add Hona to your organisation
+                    </button>
+                </div>
+
+                <!-- Kimi Section -->
+                <div class="flex flex-col items-start max-w-xl">
+                    <h2 class="text-4xl font-bold mb-6 animated-gradient-text">Meet Kimi</h2>
+                    <h3 class="text-2xl text-purple-600 mb-4">AI Marketing Strategist for Digital Growth</h3>
+                    <p class="text-gray-600 text-lg mb-6">
+                        Kimi transforms digital marketing operations by crafting data-driven sales funnels 
+                        and marketing strategies. Leveraging advanced AI algorithms, Kimi helps businesses 
+                        optimize their customer journey and maximize conversion rates across all digital channels.
+                    </p>
+                    <ul class="space-y-4 text-gray-600 mb-8">
+                        <li class="flex items-center">
+                            <span class="text-purple-600 mr-2">✓</span>
+                            Automated funnel optimization
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-purple-600 mr-2">✓</span>
+                            Multi-channel campaign management
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-purple-600 mr-2">✓</span>
+                            Real-time performance analytics
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-purple-600 mr-2">✓</span>
+                            AI-powered content recommendations
+                        </li>
+                    </ul>
+                    <button class="bg-purple-600 text-white px-8 py-4 rounded-lg hover:bg-purple-700 transition-colors text-lg">
+                        Add Kimi to your organisation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simple Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-8 w-full">
+        <div class="container mx-auto px-6 text-center">
+            <div class="text-2xl mb-4" style="font-family: 'Quicksand', sans-serif;">ikamni</div>
+            <p>© 2024 ikamni. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const symbols = [
+            '∫', '∑', '∂', '∇', '∆', 'π', '∞', '∏', 'δ', 'σ', 'μ', 'θ', '∮', 'ℝ', '∀', '∃', '∈', '∉', '±', '≠', '≈', '≤', '≥',
+            'α', 'β', 'γ', 'ε', 'λ', 'Ω', '√', '∛', '∜', '∝', '∟', '∠', '∥', '∦', '∧', '∨', '∩', '∪', '∫∫', '∮∮', '∯', '∰',
+            '⊂', '⊃', '⊆', '⊇', '⊄', '⊅', '∴', '∵', '∶', '∷', '∼', '∽', '≃', '≅', '≡', '≢', '⊕', '⊗', '∑∑'
+        ];
+        
+        const container = document.body;
+        let isPageVisible = true;
+        let animationFrameId = null;
+
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            isPageVisible = document.visibilityState === 'visible';
+            if (!isPageVisible) {
+                // Clear all symbols when page is hidden
+                const existingSymbols = document.querySelectorAll('.symbol');
+                existingSymbols.forEach(symbol => symbol.remove());
+            } else {
+                // Restart with fresh symbols when page becomes visible
+                createInitialSpreadSymbols();
+            }
+        });
+
+        function createSymbol() {
+            if (!isPageVisible) return;
+
+            const symbol = document.createElement('div');
+            symbol.className = 'symbol';
+            symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            
+            const startX = window.innerWidth;
+            let currentX = startX;
+            
+            symbol.style.left = startX + 'px';
+            symbol.style.top = Math.random() * window.innerHeight + 'px';
+            
+            const size = Math.random() * (80 - 30) + 30;
+            symbol.style.fontSize = size + 'px';
+            
+            container.appendChild(symbol);
+            
+            function animate() {
+                if (!isPageVisible) {
+                    symbol.remove();
+                    return;
+                }
+
+                currentX -= 1;
+                symbol.style.left = currentX + 'px';
+                
+                if (currentX > -100) {
+                    animationFrameId = requestAnimationFrame(animate);
+                } else {
+                    symbol.remove();
+                }
+            }
+            
+            animate();
+        }
+
+        function createInitialSpreadSymbols() {
+            // Clear existing symbols first
+            const existingSymbols = document.querySelectorAll('.symbol');
+            existingSymbols.forEach(symbol => symbol.remove());
+
+            const screenWidth = window.innerWidth;
+            const symbolCount = 30;
+            const spacing = screenWidth / symbolCount;
+            
+            for (let i = 0; i < symbolCount; i++) {
+                createSymbolAtPosition(i * spacing);
+            }
+        }
+
+        function createSymbolAtPosition(x) {
+            if (!isPageVisible) return;
+
+            const symbol = document.createElement('div');
+            symbol.className = 'symbol';
+            symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            
+            let currentX = x;
+            
+            symbol.style.left = currentX + 'px';
+            symbol.style.top = Math.random() * window.innerHeight + 'px';
+            
+            const size = Math.random() * (80 - 30) + 30;
+            symbol.style.fontSize = size + 'px';
+            
+            container.appendChild(symbol);
+            
+            function animate() {
+                if (!isPageVisible) {
+                    symbol.remove();
+                    return;
+                }
+
+                currentX -= 1;
+                symbol.style.left = currentX + 'px';
+                
+                if (currentX > -100) {
+                    animationFrameId = requestAnimationFrame(animate);
+                } else {
+                    symbol.remove();
+                }
+            }
+            
+            animate();
+        }
+
+        // Create initial spread of symbols
+        createInitialSpreadSymbols();
+
+        // Create new symbols at a controlled rate
+        let lastCreationTime = Date.now();
+        function createSymbolWithThrottle() {
+            if (isPageVisible) {
+                const now = Date.now();
+                if (now - lastCreationTime >= 500) { // Ensure minimum 500ms between creations
+                    createSymbol();
+                    lastCreationTime = now;
+                }
+            }
+            requestAnimationFrame(createSymbolWithThrottle);
+        }
+
+        createSymbolWithThrottle();
+
+        // Get modal elements
+        const modal = document.getElementById('demoModal');
+        const closeBtn = document.querySelector('.close');
+        const demoButtons = document.querySelectorAll('button.bg-purple-600');
+        const demoForm = document.getElementById('demoForm');
+        const emailError = document.getElementById('emailError');
+
+        // Common email providers to exclude
+        const commonEmailProviders = [
+            'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com',
+            'icloud.com', 'mail.com', 'protonmail.com', 'zoho.com'
+        ];
+
+        // Open modal when any demo button is clicked
+        demoButtons.forEach(button => {
+            if (button.textContent.includes('Add') || button.textContent.includes('Schedule Demo')) {
+                button.addEventListener('click', function() {
+                    modal.style.display = 'block';
+                });
+            }
+        });
+
+        // Close modal when X is clicked
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+            emailError.style.display = 'none';
+            demoForm.reset();
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+                emailError.style.display = 'none';
+                demoForm.reset();
+            }
+        });
+
+        // Form submission handler
+        demoForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const domain = email.split('@')[1];
+
+            if (!email || !domain) {
+                emailError.textContent = 'Please enter a valid email address.';
+                emailError.style.display = 'block';
+                return;
+            }
+
+            if (commonEmailProviders.includes(domain.toLowerCase())) {
+                emailError.textContent = 'Please use your business email address.';
+                emailError.style.display = 'block';
+                return;
+            }
+
+            // If validation passes, you can handle the submission here
+            // For now, we'll just show a success message
+            alert('Thank you! We will contact you shortly to schedule your demo.');
+            modal.style.display = 'none';
+            demoForm.reset();
+        });
+
+        const translations = {
+            en: {
+                title: "Vertical AI Agents on the Enterprise-level",
+                subtitle: "Deploy intelligent AI agents across your organization. Automate complex workflows, enhance decision-making, and drive operational efficiency at scale.",
+                scheduleDemo: "Schedule Demo",
+                documentation: "Documentation",
+                // Hona Section
+                meetHona: "Meet Hona",
+                honaTitle: "Our First Enterprise-Agent Dedicated to Tax Accounting",
+                honaDesc: "Hona revolutionizes tax accounting workflows by automating complex calculations, ensuring compliance, and providing real-time insights. Trained on extensive tax regulations and accounting principles, Hona helps enterprises streamline their tax operations with unprecedented accuracy.",
+                honaFeatures: [
+                    "Automated tax calculations and validations",
+                    "Real-time compliance monitoring",
+                    "Intelligent document processing",
+                    "Advanced reporting and analytics"
+                ],
+                addHona: "Add Hona to your organisation",
+                // Kimi Section
+                meetKimi: "Meet Kimi",
+                kimiTitle: "AI Marketing Strategist for Digital Growth",
+                kimiDesc: "Kimi transforms digital marketing operations by crafting data-driven sales funnels and marketing strategies. Leveraging advanced AI algorithms, Kimi helps businesses optimize their customer journey and maximize conversion rates across all digital channels.",
+                kimiFeatures: [
+                    "Automated funnel optimization",
+                    "Multi-channel campaign management",
+                    "Real-time performance analytics",
+                    "AI-powered content recommendations"
+                ],
+                addKimi: "Add Kimi to your organisation",
+                // Modal
+                modalTitle: "Schedule a Demo",
+                modalDesc: "Please enter your business email to schedule a demo of ikamni.",
+                emailLabel: "Business Email",
+                emailPlaceholder: "you@company.com",
+                requestDemo: "Request Demo",
+                // Footer
+                copyright: "© 2024 ikamni. All rights reserved."
+            },
+            ja: {
+                title: "エンタープライズレベルの垂直型AIエージェント",
+                subtitle: "組織全体にインテリジェントなAIエージェントを展開。複雑なワークフローを自動化し、意思決定を強化し、運用効率を向上させます。",
+                scheduleDemo: "デモのご予約",
+                documentation: "ドキュメント",
+                // Hona Section
+                meetHona: "Honaのご紹介",
+                honaTitle: "税務会計に特化した初のエンタープライズAIエージェント",
+                honaDesc: "Honaは、複雑な計算を自動化し、コンプライアンスを確保し、リアルタイムの洞察を提供することで、税務会計ワークフローを革新します。広範な税務規制と会計原則に基づいて訓練されたHonaは、企業の税務業務を前例のない精度で効率化します。",
+                honaFeatures: [
+                    "税務計算と検証の自動化",
+                    "リアルタイムのコンプライアンス監視",
+                    "インテリジェントな文書処理",
+                    "高度な報告と分析"
+                ],
+                addHona: "Honaを組織に追加",
+                // Kimi Section
+                meetKimi: "Kimiのご紹介",
+                kimiTitle: "デジタル成長のためのAIマーケティング戦略家",
+                kimiDesc: "Kimiは、データ駆動型のセールスファネルとマーケティング戦略を構築することで、デジタルマーケティング業務を変革します。高度なAIアルゴリズムを活用し、Kimiはビジネスのカスタマージャーニーを最適化し、すべてのデジタルチャネルでのコンバージョン率を最大化します。",
+                kimiFeatures: [
+                    "ファネル最適化の自動化",
+                    "マルチチャネルキャンペーン管理",
+                    "リアルタイムのパフォーマンス分析",
+                    "AI駆動のコンテンツレコメンデーション"
+                ],
+                addKimi: "Kimiを組織に追加",
+                // Modal
+                modalTitle: "デモのご予約",
+                modalDesc: "ikamniのデモをご予約いただくため、企業メールアドレスをご入力ください。",
+                emailLabel: "企業メールアドレス",
+                emailPlaceholder: "you@company.com",
+                requestDemo: "デモを申し込む",
+                // Footer
+                copyright: "© 2024 ikamni. All rights reserved."
+            }
+        };
+
+        let currentLang = 'ja';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ja' ? 'en' : 'ja';
+            document.getElementById('currentLang').textContent = currentLang.toUpperCase();
+            updateContent();
+        }
+
+        function updateContent() {
+            const t = translations[currentLang];
+            
+            // Update all translated content
+            document.querySelector('h1.animated-gradient-text').textContent = t.title;
+            document.querySelector('header p.text-xl').textContent = t.subtitle;
+            
+            // Update buttons with more specific selectors
+            const demoButton = document.querySelector('header button.bg-purple-600');
+            const docButton = document.querySelector('header button.border-2');
+            if (demoButton) demoButton.textContent = t.scheduleDemo;
+            if (docButton) docButton.textContent = t.documentation;
+
+            // Update Hona section with more specific selectors
+            const honaSection = document.querySelector('.grid.md\\:grid-cols-2 > div:first-child');
+            if (honaSection) {
+                honaSection.querySelector('h2').textContent = t.meetHona;
+                honaSection.querySelector('h3').textContent = t.honaTitle;
+                honaSection.querySelector('p').textContent = t.honaDesc;
+                const honaFeatures = honaSection.querySelectorAll('ul li');
+                honaFeatures.forEach((li, index) => {
+                    li.innerHTML = `<span class="text-purple-600 mr-2">✓</span>${t.honaFeatures[index]}`;
+                });
+                const honaButton = honaSection.querySelector('button');
+                if (honaButton) honaButton.textContent = t.addHona;
+            }
+
+            // Update Kimi section with more specific selectors
+            const kimiSection = document.querySelector('.grid.md\\:grid-cols-2 > div:last-child');
+            if (kimiSection) {
+                kimiSection.querySelector('h2').textContent = t.meetKimi;
+                kimiSection.querySelector('h3').textContent = t.kimiTitle;
+                kimiSection.querySelector('p').textContent = t.kimiDesc;
+                const kimiFeatures = kimiSection.querySelectorAll('ul li');
+                kimiFeatures.forEach((li, index) => {
+                    li.innerHTML = `<span class="text-purple-600 mr-2">✓</span>${t.kimiFeatures[index]}`;
+                });
+                const kimiButton = kimiSection.querySelector('button');
+                if (kimiButton) kimiButton.textContent = t.addKimi;
+            }
+
+            // Update modal content
+            const modal = document.getElementById('demoModal');
+            if (modal) {
+                modal.querySelector('h2').textContent = t.modalTitle;
+                modal.querySelector('p').textContent = t.modalDesc;
+                modal.querySelector('label[for="email"]').textContent = t.emailLabel;
+                modal.querySelector('#email').placeholder = t.emailPlaceholder;
+                modal.querySelector('#demoForm button').textContent = t.requestDemo;
+            }
+
+            // Update footer
+            const footer = document.querySelector('footer p');
+            if (footer) footer.textContent = t.copyright;
+        }
+
+        // Add initial content update when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentLang').textContent = 'JA';
+            updateContent();
+        });
+    </script>
+</body>
+</html>

@@ -14,10 +14,6 @@ ikamniは、企業の各部門に特化した垂直型AIエージェントを提
 ### 垂直型エージェント
 各部門に特化したAIエージェントを提供:
 
-<div align="center">
-  <img src="./assets/ikamni.jpg" alt="Vertical Agents Overview" width="600"/>
-</div>
-
 - **経理部門 (KeiriAgent)**
   - 経理処理の自動化
   - 予算管理

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hona - AI Tax Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .typing-indicator {
+            display: flex;
+            gap: 2px;
+            padding: 12px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            width: fit-content;
+        }
+
+        .typing-circle {
+            width: 8px;
+            height: 8px;
+            background: #a855f7;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: typing-animation 1s infinite;
+        }
+
+        .typing-circle:nth-child(2) { animation-delay: 0.2s; }
+        .typing-circle:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing-animation {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        .drag-over {
+            background-color: rgba(168, 85, 247, 0.1);
+            border: 2px dashed #a855f7;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Chat Interface -->
+    <div id="honaChat" class="fixed bottom-4 right-4 w-96 bg-white rounded-lg shadow-xl overflow-hidden">
+        <!-- Chat Header -->
+        <div class="bg-purple-600 p-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="text-white font-semibold">
+                    Hona <span class="opacity-50">by Ikamni</span>
+                </div>
+                <div class="bg-green-400 rounded-full w-2 h-2"></div>
+            </div>
+            <button onclick="toggleChat()" class="text-white hover:text-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chatMessages" class="h-96 overflow-y-auto p-4 space-y-4">
+            <!-- Welcome Message -->
+            <div class="flex gap-3">
+                <div class="flex-shrink-0 bg-purple-100 rounded-full w-8 h-8 flex items-center justify-center">
+                    H
+                </div>
+                <div class="bg-gray-100 rounded-lg p-3 max-w-[80%]">
+                    Hello! I'm Hona, your AI tax assistant. You can ask me questions or upload tax-related documents for review.
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input with File Upload -->
+        <div class="border-t p-4">
+            <form onsubmit="sendMessage(event)" class="space-y-2">
+                <!-- File Upload Area with Drag & Drop -->
+                <div id="dropZone" 
+                     class="flex items-center gap-2 mb-2 p-2 rounded-lg transition-colors"
+                     ondrop="handleDrop(event)"
+                     ondragover="handleDragOver(event)"
+                     ondragleave="handleDragLeave(event)">
+                    <label for="fileUpload" class="cursor-pointer flex items-center gap-2 text-purple-600 hover:text-purple-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                        </svg>
+                        <span class="text-sm">Attach file</span>
+                    </label>
+                    <input type="file" id="fileUpload" class="hidden" onchange="handleFileUpload(event)" 
+                           accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt">
+                    <div id="fileName" class="text-sm text-gray-500"></div>
+                </div>
+
+                <!-- Message Input -->
+                <div class="flex gap-2">
+                    <input type="text" id="messageInput" 
+                           class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                           placeholder="Ask me about taxes...">
+                    <button type="submit" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                        Send
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleChat() {
+            const chat = document.getElementById('honaChat');
+            chat.style.display = chat.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function addMessage(message, isUser) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'flex gap-3' + (isUser ? ' justify-end' : '');
+            
+            const content = `
+                ${!isUser ? `
+                    <div class="flex-shrink-0 bg-purple-100 rounded-full w-8 h-8 flex items-center justify-center">
+                        H
+                    </div>
+                ` : ''}
+                <div class="${isUser ? 'bg-purple-600 text-white' : 'bg-gray-100'} rounded-lg p-3 max-w-[80%]">
+                    ${message}
+                </div>
+            `;
+            
+            messageDiv.innerHTML = content;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function getHonaResponse(question) {
+            const responses = {
+                'default': "I apologize, but I need more specific information about your tax question to provide accurate guidance. Could you please provide more details?",
+                'deduction': "Common tax deductions include mortgage interest, charitable donations, state and local taxes, and business expenses. However, specific deductions depend on your individual circumstances.",
+                'deadline': "The standard tax filing deadline in the United States is April 15th. However, if this falls on a weekend or holiday, it may be moved to the next business day.",
+                'self employed': "Self-employed individuals typically need to pay quarterly estimated taxes and can deduct business expenses. You'll need to file Schedule C with your tax return.",
+                'w2': "A W-2 form shows your annual wages and taxes withheld. Your employer must provide this by January 31st for the previous tax year.",
+                'file': "I can help you analyze tax documents like W-2s, 1099s, and other tax forms. Feel free to upload your documents and ask specific questions about them.",
+                'upload': "You can upload tax documents using the attachment button below the chat. I can help review and explain the contents.",
+                'calculate': function() {
+                    // Generate random revenue between $100,000 and $10,000,000
+                    const revenue = Math.floor(Math.random() * (10000000 - 100000) + 100000);
+                    
+                    // Calculate estimated tax (simplified for demonstration)
+                    const federalTaxRate = 0.21; // 21% corporate tax rate
+                    const stateTaxRate = 0.05;   // Example state tax rate
+                    const federalTax = revenue * federalTaxRate;
+                    const stateTax = revenue * stateTaxRate;
+                    const totalTax = federalTax + stateTax;
+
+                    // Format numbers for display
+                    const formatNumber = (num) => new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                        maximumFractionDigits: 0
+                    }).format(num);
+
+                    return `Based on the provided information:
+
+Total Revenue: ${formatNumber(revenue)}
+
+Estimated Tax Breakdown:
+• Federal Tax (21%): ${formatNumber(federalTax)}
+• State Tax (5%): ${formatNumber(stateTax)}
+• Total Estimated Tax: ${formatNumber(totalTax)}`;
+                },
+            };
+
+            const lowerQuestion = question.toLowerCase();
+            
+            // Check for calculation request
+            if (lowerQuestion.includes('calculate') && 
+                (lowerQuestion.includes('revenue') || lowerQuestion.includes('tax'))) {
+                return responses.calculate();
+            }
+            
+            let response = responses.default;
+
+            if (lowerQuestion.includes('deduction')) response = responses.deduction;
+            else if (lowerQuestion.includes('deadline')) response = responses.deadline;
+            else if (lowerQuestion.includes('self employed')) response = responses['self employed'];
+            else if (lowerQuestion.includes('w2')) response = responses.w2;
+            else if (lowerQuestion.includes('file')) response = responses.file;
+            else if (lowerQuestion.includes('upload')) response = responses.upload;
+
+            return response;
+        }
+
+        function showTypingIndicator(isFileUpload = false) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'flex gap-3 typing-message';
+            
+            const typingMessage = isFileUpload 
+                ? "Give Hona some time, she is going through your data!"
+                : "Don't worry Hona doesn't bite! Give her whatever you need tax help with :)";
+            
+            typingDiv.innerHTML = `
+                <div class="flex-shrink-0 bg-purple-100 rounded-full w-8 h-8 flex items-center justify-center">
+                    H
+                </div>
+                <div class="space-y-2">
+                    <div class="typing-indicator">
+                        <div class="typing-circle"></div>
+                        <div class="typing-circle"></div>
+                        <div class="typing-circle"></div>
+                    </div>
+                    <div class="text-xs text-gray-400 italic">
+                        ${typingMessage}
+                    </div>
+                </div>
+            `;
+            
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            return typingDiv;
+        }
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, true);
+                input.value = '';
+                
+                const typingIndicator = showTypingIndicator(false);
+                
+                setTimeout(() => {
+                    typingIndicator.remove();
+                    const response = getHonaResponse(message);
+                    addMessage(response, false);
+                }, 3500);
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('fileName').textContent = file.name;
+                addMessage(`Uploaded file: ${file.name}`, true);
+                
+                const typingIndicator = showTypingIndicator(true);
+                
+                setTimeout(() => {
+                    typingIndicator.remove();
+                    addMessage(`I've received your file "${file.name}". I can help you analyze this document. What would you like to know about it?`, false);
+                }, 2500);
+
+                event.target.value = '';
+            }
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            document.getElementById('dropZone').classList.add('drag-over');
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            document.getElementById('dropZone').classList.remove('drag-over');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const dropZone = document.getElementById('dropZone');
+            dropZone.classList.remove('drag-over');
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                const allowedTypes = [
+                    'application/pdf',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'application/vnd.ms-excel',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'text/csv',
+                    'text/plain'
+                ];
+                
+                if (allowedTypes.includes(file.type)) {
+                    // Trigger the same handling as file input
+                    const fileInput = document.getElementById('fileUpload');
+                    fileInput.files = files;
+                    handleFileUpload({ target: fileInput });
+                } else {
+                    addMessage("Sorry, this file type is not supported. Please upload PDF, Word, Excel, CSV, or text files.", false);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

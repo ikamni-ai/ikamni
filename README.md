@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/ikamni.jpg" alt="ikamni logo" width="200"/>
+  <img src="assets/Ikamni.jpg" alt="ikamni logo" width="200"/>
   <h1>ikamni - エンタープライズ向け垂直型AIエージェントプラットフォーム</h1>
 </div>
 
@@ -12,7 +12,7 @@ ikamniは、企業の各部門に特化した垂直型AIエージェントを提
 各部門に特化したAIエージェントを提供:
 
 <div align="center">
-  <img src="assets/agents-overview.jpg" alt="Vertical Agents Overview" width="600"/>
+  <img src="assets/hona.html" alt="Vertical Agents Overview" width="600"/>
 </div>
 
 - **経理部門 (KeiriAgent)**

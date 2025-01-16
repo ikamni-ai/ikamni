@@ -1,6 +1,4 @@
-<div align="center">
-  <img src="./assets/ikamni.jpg" alt="ikamni logo" width="200"/>
-  <h1>ikamni - エンタープライズ向け垂直型AIエージェントプラットフォーム</h1>
+ <h1>ikamni - エンタープライズ向け垂直型AIエージェントプラットフォーム</h1>
 </div>
 
 ## プロジェクト概要

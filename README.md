@@ -1,4 +1,7 @@
-# ikamni - エンタープライズ向け垂直型AIエージェントプラットフォーム
+<div align="center">
+  <img src="assets/ikamni.jpg" alt="ikamni logo" width="200"/>
+  <h1>ikamni - エンタープライズ向け垂直型AIエージェントプラットフォーム</h1>
+</div>
 
 ## プロジェクト概要
 ikamniは、企業の各部門に特化した垂直型AIエージェントを提供する統合プラットフォームです。日本企業の業務プロセスとワークフローに最適化された、高度なAIアシスタントシステムを実現します。
@@ -7,6 +10,10 @@ ikamniは、企業の各部門に特化した垂直型AIエージェントを提
 
 ### 垂直型エージェント
 各部門に特化したAIエージェントを提供:
+
+<div align="center">
+  <img src="assets/agents-overview.jpg" alt="Vertical Agents Overview" width="600"/>
+</div>
 
 - **経理部門 (KeiriAgent)**
   - 経理処理の自動化
@@ -103,5 +110,7 @@ ikamniは、企業の各部門に特化した垂直型AIエージェントを提
 - レポート形式のカスタマイズ
 - 承認フローの調整
 
-## ライセンス
-Copyright © 2024 ikamni. All rights reserved.
+---
+<div align="center">
+  <p>Copyright © 2024 ikamni. All rights reserved.</p>
+</div>

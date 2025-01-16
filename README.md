@@ -1,10 +1,15 @@
 <div align="center">
-  <img src="assets/Ikamni.jpg" alt="ikamni logo" width="200"/>
+  <img src="./assets/ikamni.jpg" alt="ikamni logo" width="200"/>
   <h1>ikamni - エンタープライズ向け垂直型AIエージェントプラットフォーム</h1>
 </div>
 
 ## プロジェクト概要
 ikamniは、企業の各部門に特化した垂直型AIエージェントを提供する統合プラットフォームです。日本企業の業務プロセスとワークフローに最適化された、高度なAIアシスタントシステムを実現します。
+
+## デモ
+ブラウザで直接体験できるデモページを用意しています：
+- [垂直型エージェントデモ](./hona.html) - 各部門向けAIエージェントのデモンストレーション
+- [機能紹介](https://ikamni.jp/demo) - 詳細な機能説明とユースケース
 
 ## 主要コンポーネント
 
@@ -12,7 +17,7 @@ ikamniは、企業の各部門に特化した垂直型AIエージェントを提
 各部門に特化したAIエージェントを提供:
 
 <div align="center">
-  <img src="assets/hona.html" alt="Vertical Agents Overview" width="600"/>
+  <img src="./assets/ikamni.jpg" alt="Vertical Agents Overview" width="600"/>
 </div>
 
 - **経理部門 (KeiriAgent)**
@@ -38,6 +43,13 @@ ikamniは、企業の各部門に特化した垂直型AIエージェントを提
   - プロジェクト進捗管理
   - 技術支援
   - ドキュメント生成
+
+### Webインターフェース
+- **デモページ (hona.html)**
+  - インタラクティブなエージェントデモ
+  - リアルタイムレスポンス
+  - 部門別機能体験
+  - マルチエージェント連携デモ
 
 ### チャットシステム
 
@@ -110,7 +122,12 @@ ikamniは、企業の各部門に特化した垂直型AIエージェントを提
 - レポート形式のカスタマイズ
 - 承認フローの調整
 
+## アセット
+- `./assets/ikamni.jpg` - メインロゴ
+- `./hona.html` - デモインターフェース
+
 ---
+
 <div align="center">
   <p>Copyright © 2024 ikamni. All rights reserved.</p>
 </div>

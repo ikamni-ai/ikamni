@@ -2,7 +2,7 @@ use crate::agents::{Agent, AgentBehavior, AgentConfiguration, AgentError};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-
+#
 /// 営業部向けAIエージェント
 /// 商談支援、顧客管理、売上予測などを行う
 #[derive(Debug, Clone, Serialize, Deserialize)]

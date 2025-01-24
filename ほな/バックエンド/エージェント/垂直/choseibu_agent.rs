@@ -1,7 +1,7 @@
 use crate::agents::{Agent, AgentBehavior, AgentConfiguration, AgentError};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
-
+#
 /// 調整部AIエージェント
 /// 部門間調整、リソース配分、プロジェクト調整などを行う
 #[derive(Debug, Clone, Serialize, Deserialize)]

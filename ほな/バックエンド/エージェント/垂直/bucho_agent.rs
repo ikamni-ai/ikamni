@@ -1,7 +1,7 @@
 use crate::agents::{Agent, AgentBehavior, AgentConfiguration, AgentError};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
-
+#
 /// 部長アシスタントAIエージェント
 /// 部門管理、意思決定支援、業績分析などを行う
 #[derive(Debug, Clone, Serialize, Deserialize)]
